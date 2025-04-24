@@ -1,32 +1,22 @@
-import { test, expect, Page } from '@playwright/test';
-import { LoginPage } from '../components/loginPage';
+import { expect} from '@playwright/test';
 import creds from '../creds.json';
-import { ArticleFields, ArticlePage } from '../components/ArticlePage';
-import { BasePage } from '../components/basePage';
+import { ArticleFields } from '../components/ArticlePage';
 import { generateArticleData } from '../helper/helper';
 import { errorMessages } from '../helper/constans';
+import { test } from '../fixtures/fixtures';
 
-let page: Page;
-let basePage: BasePage
-let loginPage: LoginPage;
-let articlePage: ArticlePage;
 
-test.beforeAll(async ({browser}) => {
-    page = await browser.newPage();
-    basePage = new BasePage(page);
-    loginPage = new LoginPage(page);
-    articlePage = new ArticlePage(page);
-
+test.beforeAll(async ({loginPage}) => {
     await loginPage.goTo();
     await loginPage.loginUser(creds.email, creds.password)
 });
 
-test.beforeEach(async () => {
+test.beforeEach(async ({articlePage}) => {
     await articlePage.goTo();
 })
 
 test.describe('Article tests | Positive', () => {
-  test('Create article with all fields', async () => {
+  test('Create article with all fields', async ({articlePage, basePage}) => {
     const articleData: ArticleFields = generateArticleData(1);
     
     await articlePage.publishArticle(articleData);
@@ -36,17 +26,17 @@ test.describe('Article tests | Positive', () => {
     await expect(articlePage.tagList).toHaveCount((articleData.tagList ?? []).length);
   })
 
-  test('Create article with required fields', async () => {
+  test('Create article with required fields', async ({articlePage, basePage}) => {
     const articleData: ArticleFields = generateArticleData(0);
     
     await articlePage.publishArticle(articleData);
-    
+
     await expect(basePage.H1).toContainText(articleData.title);
     await expect(articlePage.articleContentBlock).toContainText(articleData.body);
     await expect(articlePage.tagList).toHaveCount(0);
   })
 
-  test('Create article with tags separated by commas', async () => {
+  test('Create article with tags separated by commas', async ({articlePage, basePage}) => {
     const articleData: ArticleFields = generateArticleData(0);
     articleData.tagList = ['tag1, tag2, tag3'];
     
@@ -72,7 +62,7 @@ test.describe('Article tests | Negative', () => {
       ];
 
       for (const testCase of testCases) {
-        test(`Should NOT create article when ${testCase.name}`, async () => {
+        test(`Should NOT create article when ${testCase.name}`, async ({articlePage, basePage}) => {
           await articlePage.publishArticle(testCase.article);
     
           await expect(basePage.errorMessage).toBeVisible();

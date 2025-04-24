@@ -1,0 +1,25 @@
+{
+  "name": "qa_automation_test_task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RostyslavReshetar/Qa_automation_test_task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RostyslavReshetar/Qa_automation_test_task/issues"
+  },
+  "homepage": "https://github.com/RostyslavReshetar/Qa_automation_test_task#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.14.1"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.7.0"
+  }
+}
